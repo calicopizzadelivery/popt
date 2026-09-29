@@ -1,0 +1,43 @@
+// SPDX-FileCopyrightText: 2026 The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+// popt is not part of AOSP, but shairport-sync requires it unconditionally for
+// argument parsing. Built here rather than vendored as a prebuilt so the whole
+// thing stays source in the image.
+
+package {
+    default_applicable_licenses: ["external_popt_license"],
+}
+
+license {
+    name: "external_popt_license",
+    visibility: [":__subpackages__"],
+    license_kinds: ["SPDX-license-identifier-MIT"],
+    license_text: ["COPYING"],
+}
+
+cc_library_static {
+    name: "libpopt",
+    vendor_available: true,
+
+    srcs: [
+        "src/popt.c",
+        "src/poptconfig.c",
+        "src/popthelp.c",
+        "src/poptint.c",
+        "src/poptparse.c",
+    ],
+
+    // android/ first so our config.h wins over anything generated in-tree.
+    local_include_dirs: ["android", "src"],
+    export_include_dirs: ["src"],
+
+    cflags: [
+        "-DHAVE_CONFIG_H",
+        "-Wno-unused-parameter",
+        "-Wno-sign-compare",
+        "-Wno-missing-field-initializers",
+        // popt takes _Alignof of an expression, which is a GNU extension.
+        "-Wno-gnu-alignof-expression",
+    ],
+}
