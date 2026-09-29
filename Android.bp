@@ -19,6 +19,7 @@ license {
 cc_library_static {
     name: "libpopt",
     vendor_available: true,
+    system_ext_specific: true,
 
     srcs: [
         "src/popt.c",
